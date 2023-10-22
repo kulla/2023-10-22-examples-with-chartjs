@@ -1,6 +1,6 @@
-import { Scatter } from "react-chartjs-2";
+import { Scatter, Chart } from "react-chartjs-2";
 import {
-  Chart,
+  Chart as ChartJS,
   Legend,
   LineElement,
   LinearScale,
@@ -9,9 +9,18 @@ import {
   Colors,
   AnimationSpec,
 } from "chart.js";
+import { getRelativePosition } from "chart.js/helpers";
 import "./App.css";
+import { useState } from "react";
 
-Chart.register(LinearScale, PointElement, LineElement, Tooltip, Legend, Colors);
+ChartJS.register(
+  LinearScale,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Legend,
+  Colors
+);
 
 function App() {
   const sequence = generateConvergingSequence({
@@ -99,7 +108,60 @@ function App() {
           },
         }}
       />
+      <SequenceDiagramWithLimit sequence={sequence} />
     </div>
+  );
+}
+
+function SequenceDiagramWithLimit({ sequence }: { sequence: number[] }) {
+  const [value, setValue] = useState<number | null>(1.5);
+
+  return (
+    <>
+      <h2>Click value in diagram</h2>
+      <Chart
+        type={"scatter"}
+        data={{
+          datasets: [
+            ...(value
+              ? [
+                  {
+                    label: `Wert`,
+                    type: "line" as const,
+                    data: [
+                      { x: value, y: 0 },
+                      { x: value, y: sequence.length },
+                    ],
+                  },
+                ]
+              : []),
+            {
+              label: "Sequence",
+              type: "scatter",
+              data: sequence.map((x, n) => ({ x, y: n + 1 })),
+            },
+          ],
+        }}
+        options={{
+          onClick(event, _, chart) {
+            // @ts-expect-error
+            const canvasPosition = getRelativePosition(event, chart);
+
+            // Substitute the appropriate scale IDs
+            const dataX = chart.scales.x.getValueForPixel(canvasPosition.x);
+
+            if (dataX) {
+              setValue(dataX);
+            }
+          },
+          scales: {
+            y: { beginAtZero: true },
+            x: { min: 0, max: 5 },
+          },
+        }}
+      />
+      <b>Wert: {value}</b>
+    </>
   );
 }
 
