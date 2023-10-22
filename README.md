@@ -1,4 +1,4 @@
-# Getting Started with Create React App
+# My tests with [chart.js](2023-10-22-examples-with-chartjs)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
