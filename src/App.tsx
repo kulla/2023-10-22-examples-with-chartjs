@@ -24,12 +24,13 @@ function App() {
     ],
   };
   const options = {
+    animation: false,
     scales: {
       y: {
         beginAtZero: true,
       },
     },
-  };
+  } as const;
 
   return (
     <div className="App">
