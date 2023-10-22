@@ -20,21 +20,19 @@ function App() {
     sequenceLength: 100,
   });
 
-  const data = {
-    datasets: [
-      {
-        label: "Sequence",
-        data: sequence.map((x) => ({ x, y: 0 })),
-      },
-    ],
-  };
-
   return (
     <div className="App">
       <h2>Sequence on the number line</h2>
       <div style={{ height: 150 }}>
         <Scatter
-          data={data}
+          data={{
+            datasets: [
+              {
+                label: "Sequence",
+                data: sequence.map((x) => ({ x, y: 0 })),
+              },
+            ],
+          }}
           options={{
             maintainAspectRatio: false,
             scales: {
@@ -44,6 +42,23 @@ function App() {
           }}
         />
       </div>
+      <h2>Sequence in the diagram</h2>
+      <Scatter
+        data={{
+          datasets: [
+            {
+              label: "Sequence",
+              data: sequence.map((x, n) => ({ x, y: n + 1 })),
+            },
+          ],
+        }}
+        options={{
+          scales: {
+            y: { beginAtZero: true },
+            x: { min: 0, max: 5 },
+          },
+        }}
+      />
     </div>
   );
 }
